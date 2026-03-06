@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vuvando"
+version = "1.0.0"
+description = ""
+license = "Apache-2.0"
+dependencies = [
+    "flwr[simulation]>=1.24.0",
+    "torch>=2.7.1",
+    "wfdb",                
+    "scikit-learn",       
+    "numpy",               
+    "matplotlib",          
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "vuvando"
+
+[tool.flwr.app.components]
+serverapp = "vuvando.server_app:app"
+clientapp = "vuvando.client_app:app"
+
+[tool.flwr.app.config]
+num-server-rounds = 3
+fraction-train = 0.5
+local-epochs = 1
+lr = 0.01
+
+[tool.flwr.federations]
+default = "local-simulation"
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 10
+
+[tool.flwr.federations.remote-federation]
+address = "<SUPERLINK-ADDRESS>:<PORT>"
+insecure = true  
+
